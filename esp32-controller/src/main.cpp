@@ -1,23 +1,32 @@
 /*
 * main.cpp
 * 
-* alisa yurevich, ee14nspring 2025
+* ESP32 WiFi access point for remote control of STM32 
+*   - creates WiFi soft AP named "ESP32-Car"
+*   - listens on port 80 for command from client
+*   - sends recieved commands to STM32 over I2C
+* Alisa Yurevich, Tufts University, Spring 2025
 */
 
 #include <Arduino.h>
 #include <WiFi.h>
 #include <Wire.h> 
-const char* ssid = "ESP32-Car"; // wifi discoverable name
-const char* password = "12345678"; // wifi password
 
-// listens for incoming client connections @port 80
-// note: on wifi, esp32 draws 200mA and needs a high impedance external battery
+// wifi credentials for ESP access point
+const char* ssid = "ESP32-Car"; 
+const char* password = "12345678"; 
+
+// i2c address of STM device
+#define I2C_DEV_ADDR 0x0F 
+
+// WiFi server listening on port 80 for incoming connections
+// note: on wifi, esp32 draws ~200mA and needs a high impedance external battery
 WiFiServer server(80); 
-#define I2C_DEV_ADDR 0x0F // stm32 target address
 
 /*
-* name: i2c_setup
-* 
+* name:       i2c_setup
+* purpose:    intializes ESP I2C Pins (SDA - 18, SCL - 19) with 400khz clock. 
+*             sends byte to check STM prescense on the bus
 */
 void i2c_setup() {
   Wire.begin(18, 19, 400000); // set up esp 32 i2c
@@ -27,18 +36,8 @@ void i2c_setup() {
 }
 
 /*
-* name: Wifi_setup
-* 
-*/
-void Wifi_setup() {
-  WiFi.softAP(ssid, password); // setup soft wifi access point 
-  Serial.println(WiFi.softAPIP()); 
-  server.begin(); // 
-}
-
-/*
-* name: setup
-* 
+* name:       setup
+* purpose:    arduino set up function. initializes serial, i2c and wifi
 */
 void setup() {
   Serial.begin(115200); // set up baudrate -> standard 115200
@@ -48,8 +47,20 @@ void setup() {
 }
 
 /*
-* name: sendToSTM32
-* 
+* name:      Wifi_setup
+* purpose:   sets up ESP32 as soft AP. starts the TCP server and prints the AP
+*            IP to serial.
+*/
+void Wifi_setup() {
+  WiFi.softAP(ssid, password); 
+  Serial.println(WiFi.softAPIP()); 
+  server.begin(); 
+}
+
+/*
+* name:       sendToSTM32
+* purpose:    sends a null-terminated command string to STM32 over I2C.
+*             prints success or error code to serial.
 */
 void sendToSTM32(const char* command) {
   Wire.beginTransmission(I2C_DEV_ADDR); 
@@ -65,14 +76,21 @@ void sendToSTM32(const char* command) {
   }
 }
 
+/*
+ * main loop:
+ * - checks for incoming TCP clients
+ * - reads command strings from connected clients until newline
+ * - sends commands to STM32 over I2C
+ * - handles client disconnects
+ */
 void loop() {
-  WiFiClient client = server.available(); //checks who @port 80
+  WiFiClient client = server.available(); 
 
-  if (client) { //if not null client
+  if (client) { 
     while (client.connected()) {
-      if (client.available()) { //keep checking for data
-        String command = client.readStringUntil('\n'); //
-        Serial.println("received: " + command); //check
+      if (client.available()) { 
+        String command = client.readStringUntil('\n');
+        Serial.println("received: " + command); 
         sendToSTM32(command.c_str());
       } 
     }
