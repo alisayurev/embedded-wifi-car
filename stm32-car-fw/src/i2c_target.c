@@ -1,5 +1,8 @@
+/*
+* Alisa Yurevich, Tufts University, EE14 Spring 2025
+*/
+
 #include "ee14lib.h"
-#include "stm32l432xx.h"
 
 /*
  * i2c_target_init

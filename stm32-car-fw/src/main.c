@@ -1,3 +1,11 @@
+/*
+
+
+
+
+
+*/
+
 #include "ee14lib.h"
 #include "car.h"
 #include "dac.h"
@@ -122,25 +130,14 @@ void config_dac_all(int frequency_hz){
     dac_init(); //config A3 further
 }
 
-// TO DO:
-// horn
-// make turns at current speed , maybe do diff turns idk
-// maybe when ur not pressing it doesnt move? 
-// and maybe the more u press r the harsher the turn
-
 int main(){
     initialize_motor();
-    //host_serial_init(); //only for testing purposes
    
     SysTick_initialize();
     i2c_target_init();
     performed = true;
 
     config_dac_all(440);
-
-
-    //if want to change f. while running we should use clock_set
-
     while(1){
         perform_command();
     }

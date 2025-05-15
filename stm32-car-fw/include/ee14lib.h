@@ -1,4 +1,5 @@
 /* Header file for all EE14lib functions. */
+/* Author: Professor Steven Bell */
 #ifndef EE14LIB_H
 #define EE14LIB_H
 
