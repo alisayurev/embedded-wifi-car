@@ -1,0 +1,13 @@
+# PlatformIO and VS Code stuff
+**/.pio/
+**/.vscode/
+**/.DS_Store
+**/build/
+**/.clangd/
+**/.idea/
+**/*.elf
+**/*.bin
+**/*.hex
+**/*.map
+**/__pycache__/
+**/*.pyc
