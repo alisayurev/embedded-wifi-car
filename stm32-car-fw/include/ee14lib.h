@@ -50,9 +50,6 @@ void gpio_write(EE14Lib_Pin pin, bool value);
 bool gpio_read(EE14Lib_Pin pin);
 void delay(int ms);
 
-EE14Lib_Err timer_config_pwm(TIM_TypeDef* const timer, const unsigned int freq_hz);
-EE14Lib_Err timer_config_channel_pwm(TIM_TypeDef* const timer, const EE14Lib_Pin pin, const unsigned int duty);
-
 void i2c_target_init(void);
 // Initialize the serial port
 void host_serial_init();

@@ -34,7 +34,6 @@ static void gpio_enable_port (GPIO_TypeDef *gpio) {
     RCC->AHB2ENR |= field; // Turn on the GPIO clock
 }
 
-
 // Configure the direction for a given GPIO pin
 //   pin: A Nucleo pin ID (D2, A4, etc.)
 //   direction: One of INPUT (0b00) or OUTPUT (0b01).  Other modes are invalid.
