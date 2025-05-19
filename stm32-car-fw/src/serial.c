@@ -1,15 +1,16 @@
-/* Helper functions for EE 14 Lab 1
- * www.ece.tufts.edu/ee/14
- * Steven Bell <sbell@ece.tufts.edu>, based almost entirely on work from Joel Grodstein
- * January 2025
- */
+/*
+* serial.c
+* 
+* 
+* note: A7 is used for UART. use of this pin in other files will interfere with serial write
+* Prof. Steven Bell <sbell@ece.tufts.edu>, EE14 Spring 2025
+*/
 #include "stm32l432xx.h"
 #include <stdbool.h>
 
 static void USART_Init (USART_TypeDef *USARTx, bool tx_en, bool rx_en,int baud);
 static void UART2_GPIO_Init(void);
 static void USART_Delay(uint32_t us);
-
 static void set_gpio_alt_func (GPIO_TypeDef *gpio,unsigned int pin,unsigned int func);
 
 // The Nucleo 432 wires PA2 to the ST-Link's VCP_TX pin via AF7, and PA15 to
@@ -36,8 +37,7 @@ static void UART2_GPIO_Init(void) {
     // Both PA2 and PA15 are push-pull (which is the reset default, anyway).
     GPIOA->OTYPER  &= ~((0x3<<(2*2)) | (0x3<<(2*15)));	// Clear bits
 }
-
-
+s
 // Set for 8 data bits, 1 start & 1 stop bit, 16x oversampling, 9600 baud.
 // And by default, we also get no parity, no hardware flow control (USART_CR3),
 // asynch mode (USART_CR2).
@@ -88,7 +88,6 @@ static void USART_Init (USART_TypeDef *USARTx, bool tx_en, bool rx_en,int baud){
 	    ;
 }
 
-
 void UART_write_byte (USART_TypeDef *USARTx, char data) {
     // spin-wait until the TXE (TX empty) bit is set
     while (!(USARTx->ISR & USART_ISR_TXE));
@@ -106,7 +105,6 @@ void USART_Delay(uint32_t us) {
     uint32_t time = 100*us/7;    
     while(--time);   
 }
-
 
 // Turn on the clock for a GPIO port.
 static void gpio_enable_port (GPIO_TypeDef *gpio) {
@@ -148,7 +146,6 @@ void set_gpio_alt_func (GPIO_TypeDef *gpio, unsigned int pin, unsigned int func)
     // pins/port. And 00 -> no pullup or pulldown.
     gpio->PUPDR &= ~(3UL <<(2*pin));		// No PUP or PDN
 }
-
 
 void host_serial_init() {
     int baud=9600;

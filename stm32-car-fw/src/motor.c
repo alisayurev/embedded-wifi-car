@@ -1,3 +1,10 @@
+/*
+* motor.c
+*
+*
+*
+*/
+
 #include "ee14lib.h"
 #include "car.h"
 #include "dac.h"
@@ -69,6 +76,7 @@ void initialize_motor() {
     set_motor_duty(RIGHT, 0); 
 
 }
+
 void set_motor_direction(motor_t motor, direction direction) {
     if (motor == LEFT) {
         car.motorL.direction = direction;
@@ -92,7 +100,6 @@ void set_motor_direction(motor_t motor, direction direction) {
         }
     }
 }
-
 
 /*
  * drive 
